@@ -1,0 +1,12 @@
+INSERT INTO region (name, pcode, code) VALUES ('翠湖西路社区','0', '530102001001');
+INSERT INTO region (name, pcode, code) VALUES ('水晶宫社区','0', '530102001002');
+INSERT INTO region (name, pcode, code) VALUES ('五华山社区','0', '530102001003');
+INSERT INTO region (name, pcode, code) VALUES ('文化巷社区','0', '530102001004');
+INSERT INTO region (name, pcode, code) VALUES ('翠湖北路社区','0', '530102001005');
+INSERT INTO region (name, pcode, code) VALUES ('北门社区','0', '530102001006');
+INSERT INTO region (name, pcode, code) VALUES ('翠湖社区','0', '530102001007');
+INSERT INTO region (name, pcode, code) VALUES ('圆通西路社区','0', '530102001008');
+INSERT INTO region (name, pcode, code) VALUES ('云南大学社区','0', '530102001009');
+INSERT INTO region (name, pcode, code) VALUES ('圆通社区','0', '530102001010');
+INSERT INTO region (name, pcode, code) VALUES ('云南师范大学社区','0', '530102001011');
+INSERT INTO region (name, pcode, code) VALUES ('云南民族大学社区','0', '530102001012');
