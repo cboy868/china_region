@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"xue.com/wansq/china_regions/fetcher"
-	"xue.com/wansq/china_regions/region/models"
+	"github.com/cboy868/china_regions/fetcher"
+	"github.com/cboy868/china_regions/region/models"
 )
 
 //Run start

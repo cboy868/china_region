@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"xue.com/wansq/china_regions/engine"
-	"xue.com/wansq/china_regions/region/models"
+	"github.com/cboy868/china_regions/engine"
+	"github.com/cboy868/china_regions/region/models"
 )
 
 const provinceListRe = `<td><a href='([0-9]+)\.html'>([^<]+)<br/></a></td>`

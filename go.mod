@@ -1,4 +1,4 @@
-module xue.com/wansq/china_regions
+module github.com/cboy868/china_regions
 
 go 1.13
 

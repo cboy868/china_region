@@ -1,9 +1,9 @@
 package main
 
 import (
-	"xue.com/wansq/china_regions/engine"
-	"xue.com/wansq/china_regions/region/models"
-	"xue.com/wansq/china_regions/region/parser"
+	"github.com/cboy868/china_regions/engine"
+	"github.com/cboy868/china_regions/region/models"
+	"github.com/cboy868/china_regions/region/parser"
 )
 
 func main() {
