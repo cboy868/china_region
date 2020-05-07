@@ -8,6 +8,7 @@ import (
 
 	"github.com/cboy868/china_regions/fetcher"
 	"github.com/cboy868/china_regions/region/models"
+	"github.com/go-redis/redis/v7"
 )
 
 //Run start
@@ -37,16 +38,20 @@ func Run(seeds ...Request) {
 
 		requests = append(requests, parseResult.Requests...)
 
-		f, err := os.Create("./region.sql") //创建文件
-		if err != nil {
-			log.Printf("打开文件错误：%s", err)
-		}
-		defer f.Close()
+		// f, err := os.Create("./region.sql") //创建文件
+		// if err != nil {
+		// 	log.Printf("打开文件错误：%s", err)
+		// }
+		// defer f.Close()
+
+		client := CreateRedisClient()
+		defer client.Close()
 
 		for _, item := range parseResult.Items {
 			log.Printf("Got items: %v", item)
 			// fmt.Printf("a:%s", f)
-			WriteSQL(item.(models.Region), f)
+			// WriteSQL(item.(models.Region), f)
+			WriteSQLToRedis(item.(models.Region), client)
 		}
 	}
 
@@ -63,4 +68,21 @@ func WriteSQL(region models.Region, f *os.File) {
 		log.Printf("打开文件错误：%s", err)
 	}
 	w.Flush()
+}
+
+//WriteSQLToRedis 2
+func WriteSQLToRedis(region models.Region, client *redis.Client) {
+	sqlStrFmt := "INSERT INTO region (name, pcode, code) VALUES ('%s','%s', '%s');\n"
+	sqlStr := fmt.Sprintf(sqlStrFmt, region.Name, region.Pcode, region.Code)
+	client.HMSet("myredis", region.Code, sqlStr)
+}
+
+//CreateRedisClient 1
+func CreateRedisClient() *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+	return client
 }
