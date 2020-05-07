@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -10,7 +9,6 @@ import (
 )
 
 const provinceListRe = `<td><a href='([0-9]+)\.html'>([^<]+)<br/></a></td>`
-const baseURL = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/"
 
 //ParseProList 1
 func ParseProList(url string, contents []byte, pitem interface{}) engine.ParseResult {
@@ -31,6 +29,7 @@ func ParseProList(url string, contents []byte, pitem interface{}) engine.ParseRe
 			Name:  string(m[2]),
 			Code:  string(m[1]),
 			Pcode: "0",
+			Type:  "citytr",
 		}
 
 		result.Items = append(result.Items, region)
@@ -44,10 +43,6 @@ func ParseProList(url string, contents []byte, pitem interface{}) engine.ParseRe
 	return result
 }
 
-// const cityListRe = `<tr class='[a-z]+'><td><a href='([0-9/]+).html'>([0-9]+)</a></td><td><a href='[0-9/]+.html'>([^<]+)</a></td></tr>`
-
-// const cityListRe = `<tr class='[a-z]+'><td>[<a href='[0-9/]?.html'>[0-9]?</a>]?</td><td>[<a href='[0-9/]?.html'>[^<]+</a>]?</td></tr>`
-
 const cityListRe = `<tr class='([a-z]+)'><td>(<a href='([0-9/]+).html'>)?([0-9]+)(</a>)?</td><td>(<a href='[0-9/]+.html'>)?([^<]+)(</a>)?</td></tr>`
 
 //ParseCityList 处理子元素
@@ -55,7 +50,7 @@ func ParseCityList(url string, contents []byte, pitem interface{}) engine.ParseR
 	re := regexp.MustCompile(cityListRe)
 
 	matches := re.FindAllSubmatch(contents, -1)
-	fmt.Printf("%s\n", contents)
+	// fmt.Printf("%s\n", contents)
 
 	result := engine.ParseResult{}
 	currentURL := url[0:strings.LastIndex(url, "/")]
@@ -66,27 +61,28 @@ func ParseCityList(url string, contents []byte, pitem interface{}) engine.ParseR
 	//name m[7]
 	// fmt.Printf("%s", matches)
 	for _, m := range matches {
-		fmt.Printf("abcd:%s\n", m[3])
+		// fmt.Printf("4:%s,7:%s\n", m[4], m[7])
 		region := models.Region{
-			Code:  string(m[3]),
-			Name:  string(m[6]),
+			Code:  string(m[4]),
+			Name:  string(m[7]),
 			Pcode: pregion.Code,
+			Type:  string(m[1]),
 		}
 		result.Items = append(result.Items, region)
 
-		if m[2] == nil {
+		if m[3] == nil {
 			continue
 		}
 
 		if string(m[1]) == "towntr" {
 			result.Requests = append(result.Requests, engine.Request{
-				Url:        currentURL + "/" + string(m[2]) + ".html",
+				Url:        currentURL + "/" + string(m[3]) + ".html",
 				ParserFunc: ParseVillageList,
 				Pitem:      region,
 			})
 		} else {
 			result.Requests = append(result.Requests, engine.Request{
-				Url:        currentURL + "/" + string(m[2]) + ".html",
+				Url:        currentURL + "/" + string(m[3]) + ".html",
 				ParserFunc: ParseCityList,
 				Pitem:      region,
 			})
@@ -114,6 +110,7 @@ func ParseVillageList(url string, contents []byte, pitem interface{}) engine.Par
 			Code:  string(m[1]),
 			Name:  string(m[2]),
 			Pcode: pregion.Code,
+			Type:  "village",
 		}
 		result.Items = append(result.Items, region)
 	}

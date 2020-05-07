@@ -35,30 +35,36 @@ func Run(seeds ...Request) {
 		// log.Printf("内容：%s", body)
 
 		parseResult := r.ParserFunc(r.Url, body, r.Pitem)
-
 		requests = append(requests, parseResult.Requests...)
 
-		// f, err := os.Create("./region.sql") //创建文件
-		// if err != nil {
-		// 	log.Printf("打开文件错误：%s", err)
-		// }
-		// defer f.Close()
-
-		client := CreateRedisClient()
-		defer client.Close()
+		cityStr := (r.Pitem.(models.Region)).Type
+		f, err := OpenFile("./files/" + cityStr + ".csv")
+		if err != nil {
+			panic("有错先直接异常" + err.Error())
+		}
+		defer f.Close()
 
 		for _, item := range parseResult.Items {
 			log.Printf("Got items: %v", item)
-			// fmt.Printf("a:%s", f)
-			// WriteSQL(item.(models.Region), f)
-			WriteSQLToRedis(item.(models.Region), client)
+			WriteCsvFile(item.(models.Region), f)
 		}
 	}
 
 }
 
-//WriteSQL 1
-func WriteSQL(region models.Region, f *os.File) {
+// WriteCsvFile 数据写入csv文件
+func WriteCsvFile(region models.Region, f *os.File) {
+	w := bufio.NewWriter(f) //创建新的 Writer 对象
+	lineStr := fmt.Sprintf("%s,%s,%s,%s\n", region.Code, region.Pcode, region.Name, region.Type)
+	_, err := w.WriteString(lineStr)
+	if err != nil {
+		log.Printf("打开文件错误：%s", err)
+	}
+	w.Flush()
+}
+
+//WriteSQLToFile 1
+func WriteSQLToFile(region models.Region, f *os.File) {
 	sqlStrFmt := "INSERT INTO region (name, pcode, code) VALUES ('%s','%s', '%s');\n"
 	sqlStr := fmt.Sprintf(sqlStrFmt, region.Name, region.Pcode, region.Code)
 
@@ -75,6 +81,16 @@ func WriteSQLToRedis(region models.Region, client *redis.Client) {
 	sqlStrFmt := "INSERT INTO region (name, pcode, code) VALUES ('%s','%s', '%s');\n"
 	sqlStr := fmt.Sprintf(sqlStrFmt, region.Name, region.Pcode, region.Code)
 	client.HMSet("myredis", region.Code, sqlStr)
+}
+
+//OpenFile 获取文件句柄
+func OpenFile(file string) (*os.File, error) {
+	f, err := os.OpenFile(file, os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Printf("error:%s", err)
+		return nil, err
+	}
+	return f, nil
 }
 
 //CreateRedisClient 1
