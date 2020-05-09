@@ -29,7 +29,7 @@ func ParseProList(url string, contents []byte, pitem interface{}) engine.ParseRe
 			Name:  string(m[2]),
 			Code:  string(m[1]),
 			Pcode: "0",
-			Type:  "citytr",
+			Type:  "provincetr",
 		}
 
 		result.Items = append(result.Items, region)
@@ -110,7 +110,7 @@ func ParseVillageList(url string, contents []byte, pitem interface{}) engine.Par
 			Code:  string(m[1]),
 			Name:  string(m[2]),
 			Pcode: pregion.Code,
-			Type:  "village",
+			Type:  "villagetr",
 		}
 		result.Items = append(result.Items, region)
 	}

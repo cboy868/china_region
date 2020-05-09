@@ -7,13 +7,12 @@ import (
 )
 
 func main() {
-
 	provinceURL := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/index.html"
 	// url := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/53/01/02/530102001.html"
 	engine.Run(engine.Request{
 		Url:        provinceURL,
 		ParserFunc: parser.ParseProList,
-		Pitem:      models.Region{Code: "0", Type: "province"},
+		Pitem:      models.Region{Code: "0", Type: "provincetr"},
 	})
 
 	// cityURL := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/13.html"

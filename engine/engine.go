@@ -33,19 +33,25 @@ func Run(seeds ...Request) {
 		}
 
 		// log.Printf("内容：%s", body)
+		// cityStr := (r.Pitem.(models.Region)).Type
 
 		parseResult := r.ParserFunc(r.Url, body, r.Pitem)
 		requests = append(requests, parseResult.Requests...)
 
-		cityStr := (r.Pitem.(models.Region)).Type
-		f, err := OpenFile("./files/" + cityStr + ".csv")
-		if err != nil {
-			panic("有错先直接异常" + err.Error())
-		}
-		defer f.Close()
+		// f, err := OpenFile("./files/" + cityStr + ".csv")
+		// if err != nil {
+		// 	panic("有错先直接异常" + err.Error())
+		// }
+		// defer f.Close()
+
+		fileMaps := OpenFiles()
+
+		// defer f.Close()
 
 		for _, item := range parseResult.Items {
 			log.Printf("Got items: %v", item)
+			f := fileMaps[(item.(models.Region)).Type]
+			defer f.Close()
 			WriteCsvFile(item.(models.Region), f)
 		}
 	}
@@ -54,7 +60,7 @@ func Run(seeds ...Request) {
 
 // WriteCsvFile 数据写入csv文件
 func WriteCsvFile(region models.Region, f *os.File) {
-	w := bufio.NewWriter(f) //创建新的 Writer 对象
+	w := bufio.NewWriterSize(f, 4096) //创建新的 Writer 对象
 	lineStr := fmt.Sprintf("%s,%s,%s,%s\n", region.Code, region.Pcode, region.Name, region.Type)
 	_, err := w.WriteString(lineStr)
 	if err != nil {
@@ -101,4 +107,18 @@ func CreateRedisClient() *redis.Client {
 		DB:       0,  // use default DB
 	})
 	return client
+}
+
+//OpenFiles 1
+func OpenFiles() map[string]*os.File {
+	c := make(map[string]*os.File)
+	s := []string{"provincetr", "citytr", "countytr", "towntr", "villagetr"}
+	for _, city := range s {
+		f, err := os.OpenFile("./files/"+city+".csv", os.O_CREATE|os.O_APPEND, 0644)
+		if err != nil {
+			log.Printf("error:%s", err)
+		}
+		c[city] = f
+	}
+	return c
 }
