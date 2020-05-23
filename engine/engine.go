@@ -11,8 +11,10 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
+type SimpleEngine struct{}
+
 //Run start
-func Run(seeds ...Request) {
+func (e SimpleEngine) Run(seeds ...Request) {
 	var requests []Request
 
 	for _, r := range seeds {
@@ -22,20 +24,28 @@ func Run(seeds ...Request) {
 	for len(requests) > 0 {
 		r := requests[0]
 		requests = requests[1:]
-		body, err := fetcher.Fetch(r.Url)
+		// body, err := fetcher.Fetch(r.Url)
 
-		log.Printf("Get data from url:%s", r.Url)
+		// log.Printf("Get data from url:%s", r.Url)
 
+		// if err != nil {
+		// 	log.Printf("fetch url:%v error:%v 重新把请求推入到requests中", r.Url, err)
+		// 	requests = append(requests, r)
+		// 	continue
+		// }
+
+		// // log.Printf("内容：%s", body)
+		// // cityStr := (r.Pitem.(models.Region)).Type
+
+		// parseResult := r.ParserFunc(r.Url, body, r.Pitem)
+
+		parseResult, err := Worker(r)
 		if err != nil {
 			log.Printf("fetch url:%v error:%v 重新把请求推入到requests中", r.Url, err)
 			requests = append(requests, r)
 			continue
 		}
 
-		// log.Printf("内容：%s", body)
-		// cityStr := (r.Pitem.(models.Region)).Type
-
-		parseResult := r.ParserFunc(r.Url, body, r.Pitem)
 		requests = append(requests, parseResult.Requests...)
 
 		// f, err := OpenFile("./files/" + cityStr + ".csv")
@@ -56,6 +66,14 @@ func Run(seeds ...Request) {
 		}
 	}
 
+}
+
+func Worker(r Request) (ParseResult, error) {
+	body, err := fetcher.Fetch(r.Url)
+	if err != nil {
+		return ParseResult{}, err
+	}
+	return r.ParserFunc(r.Url, body, r.Pitem), nil
 }
 
 // WriteCsvFile 数据写入csv文件
