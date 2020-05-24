@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+
+	//非并发
 	// provinceURL := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/index.html"
 	// // url := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/53/01/02/530102001.html"
 	// engine.SimpleEngine{}.Run(engine.Request{
@@ -23,6 +25,7 @@ func main() {
 	// 	Pitem:      models.Region{Code: "0", Type: "citytr"},
 	// })
 
+	//迸发版
 	provinceURL := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/index.html"
 	// url := "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/53/01/02/530102001.html"
 	e := engine.ConcurrentEngine{

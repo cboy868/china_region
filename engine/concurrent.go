@@ -50,7 +50,6 @@ func createWorker(in chan Request, out chan ParseResult, c *ConcurrentEngine) {
 			result, err := Worker(request)
 			if err != nil {
 				log.Printf("fetch url:%v error:%v 重新把请求推入到requests中", request.Url, err)
-				// requests = append(requests, r)
 				c.Scheduler.Submit(request)
 				continue
 			}
