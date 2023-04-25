@@ -1,8 +1,8 @@
 china_region 中国省市地区的数据采集
 _____
 
-数据主页:[http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/](http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/)  
-当前源数据地址：[http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/index.html](http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/index.html)  
+
+数据主页:[http://www.stats.gov.cn/sj/tjbz/tjyqhdmhcxhfdm/2022/13.html](http://www.stats.gov.cn/sj/tjbz/tjyqhdmhcxhfdm/2022/13.html)  
 
 
 使用
